@@ -1,95 +1,67 @@
-package com.company;
-
+import java.util.Calendar;
+import java.util.Objects;
 import java.util.Scanner;
-
-class Person {
-    public String fullName;
-    public String phone;
-    private int age;
-
-    public Person(String fullName, String phone, int age) {
-        this.fullName = fullName;
-        this.phone = phone;
-        this.age = age;
-    }
-
-    public int getAge() {
-        return age;
-    }
-}
-
-class Student extends Person {
-    public int course;
-    public String faculty;
-    private int admissionYear;
-
-    public Student(String fullName, String phone, int age, int course, String faculty, int admissionYear) {
-        super(fullName, phone, age);
-        this.course = course;
-        this.faculty = faculty;
-        this.admissionYear = admissionYear;
-    }
-
-    public int getAdmissionYear() {
-        return admissionYear;
-    }
-}
 
 public class Main {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        Scanner in = new Scanner(System.in);
         Student[] students = new Student[3];
-
-        // Ввод данных студентов
-        for (int i = 0; i < students.length; i++) {
-            System.out.println("Введите данные для студента #" + (i + 1));
-
-            System.out.print("ФИО: ");
-            String fullName = scanner.nextLine();
-
-            System.out.print("Телефон: ");
-            String phone = scanner.nextLine();
-
-            System.out.print("Возраст: ");
-            int age = Integer.parseInt(scanner.nextLine());
-
-            System.out.print("Курс: ");
-            int course = Integer.parseInt(scanner.nextLine());
-
-            System.out.print("Факультет: ");
-            String faculty = scanner.nextLine();
-
-            System.out.print("Год поступления: ");
-            int admissionYear = Integer.parseInt(scanner.nextLine());
-
-            students[i] = new Student(fullName, phone, age, course, faculty, admissionYear);
-            System.out.println();
+        students[0] = new Student(20, "Иванов Иван Иванович", "+79991234567", 2020, Calendar.SEPTEMBER, 1,  3, "Физика");
+        students[1] = new Student(21, "Петров Петр Петрович", "+79992345678",2021, Calendar.SEPTEMBER, 1,   2, "Математика");
+        students[2] = new Student(22, "Сидоров Сидор Сидорович", "+79993456789",2019, Calendar.SEPTEMBER, 1,  4, "Физика");
+        for (Student student: students){
+            student.DisplayInfo();
         }
-
-        // а) ФИО и возраст всех студентов
-        System.out.println("а) ФИО и возраст всех студентов:");
-        for (Student s : students) {
-            System.out.println(s.fullName + " — " + s.getAge() + " лет");
-        }
-
-        // б) Список студентов заданного факультета
-        System.out.print("\nб) Введите факультет для фильтрации: ");
-        String searchFaculty = scanner.nextLine();
-        System.out.println("Студенты факультета \"" + searchFaculty + "\":");
-        for (Student s : students) {
-            if (s.faculty.equalsIgnoreCase(searchFaculty)) {
-                System.out.println(s.fullName);
+        System.out.print("Задайте факультет: ");
+        String assignedFaculty = in.nextLine();
+        for (Student student: students) {
+            if (Objects.equals(student.Faculty, assignedFaculty)){
+                student.DisplayInfo();
             }
         }
-
-        // в) Список студентов, поступивших после заданного года
-        System.out.print("\nв) Введите год для фильтрации (поступившие после): ");
-        int yearFilter = Integer.parseInt(scanner.nextLine());
-        System.out.println("Студенты, поступившие после " + yearFilter + ":");
-        for (Student s : students) {
-            if (s.getAdmissionYear() > yearFilter) {
-                System.out.println(s.fullName);
+        System.out.print("Задайте год: ");
+        int assignedYear = in.nextInt();
+        for (Student student: students){
+            if (student.getDateOfYear() > assignedYear){
+                student.DisplayInfo();
             }
         }
+    }
+}
+class Person {
+    private int Age;
+    public String fullName;
+    public String Phone;
+    Person(int Age, String fullName, String Phone){
+        this.Age = Age;
+        this.fullName = fullName;
+        this.Phone = Phone;
+    }
+    public void DisplayInfo(){
+        System.out.println("ФИО студента: " + fullName + "; возраст студента: " + getAge());
+    }
+    public int getAge() {
+        return Age;
+    }
+}
+class Student extends Person {
+    private Calendar DateOfEnrolment;
+    public int Course;
+    public String Faculty;
+
+    Student(int Age, String fullName, String Phone, int year, int month, int day, int Course, String Faculty) {
+        super(Age, fullName, Phone);
+        this.DateOfEnrolment = Calendar.getInstance();
+        this.DateOfEnrolment.set(year, month, day);
+        this.Course = Course;
+        this.Faculty = Faculty;
+    }
+
+    @Override
+    public void DisplayInfo() {
+        System.out.println("ФИО студента: " + fullName + " возраст студента: " + getAge());
+    }
+    public int getDateOfYear() {
+        return DateOfEnrolment.get(Calendar.YEAR);
     }
 }
